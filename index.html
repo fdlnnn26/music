@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gold Jedag Jedug iPhone Style</title>
+    <title>Gold Jedag Jedug iPhone Style - Pure Overlay</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@900&display=swap" rel="stylesheet">
     
@@ -34,7 +34,7 @@
             position: relative;
         }
 
-        /* Efek Guncang Aktif setelah layar diketuk */
+        /* Efek Guncang Langsung Aktif Pas Load */
         .activated .gold-shake-container {
             animation: goldBassShake 0.45s infinite cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
@@ -145,11 +145,7 @@
 </head>
 <body>
 
-    <div id="debugStatus" style="position: absolute; top: 15px; left: 15px; color: #ffcc00; font-size: 13px; z-index: 9999; font-family: sans-serif; background: rgba(0,0,0,0.7); padding: 5px 10px; border-radius: 4px;">
-        Status: Siap. Silakan KETUK/KLIK layar untuk tes musik.
-    </div>
-
-    <audio id="bgMusic" src="music.mp3" loop preload="auto"></audio>
+    <audio id="bgMusic" src="music.mp3" loop autoplay preload="auto"></audio>
 
     <div class="gold-shake-container">
         <div class="ambient-gold-flash"></div>
@@ -169,33 +165,18 @@
     </div>
 
     <script>
-        const audio = document.getElementById('bgMusic');
-        const debug = document.getElementById('debugStatus');
-
-        // DETEKSI 1: Jika file music.mp3 di GitHub namanya salah / tidak ada (Error 404)
-        audio.addEventListener('error', () => {
-            debug.innerHTML = "❌ ERROR: File 'music.mp3' gagal dimuat! Periksa nama file di GitHub (wajib huruf kecil semua).";
-            debug.style.color = "#ff4d4d";
-        });
-
-        // Pemicu Musik saat Layar Diklik
-        document.addEventListener('click', () => {
-            debug.innerHTML = "⏳ Sedang mencoba memutar musik...";
+        // Jalankan sistem secara paksa begitu halaman selesai dimuat
+        window.addEventListener('load', () => {
+            const audio = document.getElementById('bgMusic');
             
-            audio.play().then(() => {
-                // DETEKSI 2: Jika Sukses Jalan
-                debug.innerHTML = "✅ SUKSES: Musik berputar!";
-                debug.style.color = "#4dff4d";
-                document.body.classList.add('activated');
-                
-                // Hilangkan teks debug setelah 3 detik agar overlay OBS bersih
-                setTimeout(() => { debug.style.display = 'none'; }, 3000);
-            }).catch(error => {
-                // DETEKSI 3: Jika diblokir sistem browser
-                debug.innerHTML = "❌ GAGAL: Browser memblokir audio. Error: " + error.message;
-                debug.style.color = "#ff4d4d";
+            // Langsung aktifkan animasi jedag-jedug
+            document.body.classList.add('activated');
+            
+            // Paksa audio putar (Sangat manjur di OBS / TikTok Live Studio)
+            audio.play().catch(err => {
+                console.log("Autoplay diblokir di browser biasa, tapi aman di OBS Browser Source:", err);
             });
-        }, { once: true });
+        });
     </script>
 </body>
 </html>
