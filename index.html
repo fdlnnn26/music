@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gold Jedag Jedug - Ultimate Stream Overlay</title>
+    <title>Gold Jedag Jedug - Hype Countdown Overlay</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@900&display=swap" rel="stylesheet">
     
@@ -23,7 +23,38 @@
             user-select: none;
         }
 
-        /* MASTER WRAPPER - Langsung Animasi Guncang Tanpa Syarat Klik/JS */
+        /* SCREEN COUNTDOWN STYLE */
+        .countdown-box {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+            pointer-events: none;
+        }
+        .countdown-text {
+            font-size: 38vw;
+            color: #ffd700;
+            font-weight: 900;
+            text-shadow: 0 0 20px rgba(0,0,0,0.8), 0 0 40px #ffd700, 0 0 80px #ffaa00;
+            opacity: 0;
+        }
+        /* Animasi Pop Angka 1 2 3 */
+        .pop-boom {
+            animation: popBoomAnim 0.95s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+        @keyframes popBoomAnim {
+            0% { transform: scale(0.2); opacity: 0; filter: blur(8px); }
+            30% { transform: scale(1.15); opacity: 1; filter: blur(0); }
+            70% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(1.4); opacity: 0; }
+        }
+
+        /* MASTER WRAPPER KONTEN UTAMA */
         .gold-shake-container {
             width: 100%;
             height: 100%;
@@ -32,10 +63,17 @@
             align-items: center;
             justify-content: center;
             position: relative;
+            opacity: 0; /* Sembunyi dulu pas countdown */
+            transition: opacity 0.2s ease;
+        }
+
+        /* AKTIF SETELAH COUNTDOWN SELESAI */
+        .activated .gold-shake-container {
+            opacity: 1;
             animation: goldBassShake 0.45s infinite cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
 
-        /* AMBIENT LIGHTS - Otomatis Kelap-Kelip */
+        /* AMBIENT LIGHTS KELAP-KELIP */
         .ambient-gold-flash {
             position: absolute;
             width: 550px;
@@ -43,26 +81,32 @@
             background: radial-gradient(circle, rgba(255, 215, 0, 0.2) 0%, transparent 70%);
             mix-blend-mode: screen;
             pointer-events: none;
+        }
+        .activated .ambient-gold-flash {
             animation: goldFlash 0.45s infinite ease-out;
         }
 
-        /* KONTEN TENGAH - Efek Mentul / Pulse */
+        /* KONTEN TENGAH MENTUL-MENTUL */
         .hype-center {
             text-align: center;
             z-index: 10;
+        }
+        .activated .hype-center {
             animation: goldBassPulse 0.45s infinite cubic-bezier(0.175, 0.885, 0.32, 1.25);
         }
 
-        /* IPHONE EMOJI WRAPPER */
+        /* IPHONE EMOJI GLOW */
         .iphone-emoji {
             width: 28vw;
             height: auto;
             margin-bottom: 25px;
             display: inline-block;
+        }
+        .activated .iphone-emoji {
             animation: iphoneEmojiGlow 0.45s infinite ease-out;
         }
 
-        /* TYPOGRAPHY WITH GLOW EFFECT */
+        /* TEXT GLOW */
         .modern-text {
             font-size: 9.5vw;
             color: #ffffff;
@@ -72,15 +116,16 @@
             letter-spacing: 3px;
             line-height: 1.2;
             text-shadow: 0 0 10px rgba(0, 0, 0, 0.9), 0 0 20px rgba(0, 0, 0, 0.9); 
+        }
+        .activated .modern-text {
             animation: goldTextGlow 0.45s infinite ease-out;
         }
-
         .gold-highlight {
             color: #ffd700;
             text-shadow: 0 0 10px rgba(0, 0, 0, 0.9);
         }
 
-        /* NADA MUSIK EMAS TERBANG */
+        /* NADA MUSIK TERBANG */
         .gold-note {
             position: absolute;
             bottom: -10%;
@@ -89,10 +134,12 @@
             z-index: 5;
             opacity: 0;
             filter: drop-shadow(0 0 12px #ffd700);
+        }
+        .activated .gold-note {
             animation: noteFlyUp linear infinite;
         }
 
-        /* KEYFRAMES ANIMASI JEDAG JEDUG */
+        /* KEYFRAMES JEDAG JEDUG */
         @keyframes goldBassShake {
             0% { transform: translate(0, 0) rotate(0deg); }
             10% { transform: translate(-5px, 6px) rotate(-0.5deg); } 
@@ -130,7 +177,11 @@
 </head>
 <body>
 
-    <audio id="bgMusic" src="music.mp3" loop autoplay preload="auto"></audio>
+    <div id="countdownBox" class="countdown-box">
+        <span id="countdownText" class="countdown-text">1</span>
+    </div>
+
+    <audio id="bgMusic" src="music.mp3" loop preload="auto"></audio>
 
     <div class="gold-shake-container">
         <div class="ambient-gold-flash"></div>
@@ -152,26 +203,53 @@
     <script>
         window.addEventListener('DOMContentLoaded', () => {
             const audio = document.getElementById('bgMusic');
-            audio.loop = true; // Paksa loop aktif di sistem
+            const countBox = document.getElementById('countdownBox');
+            const countText = document.getElementById('countdownText');
+            audio.loop = true;
 
-            // Fungsi penembak otomatis + sistem deteksi gagal (Auto-Retry)
-            function paksaPutarLagu() {
+            // Fungsi memutar musik secara paksa sampai berhasil tembus sistem
+            function jalankanMusikOtomatis() {
                 audio.play().then(() => {
-                    console.log("Overlay: Musik berhasil berputar otomatis.");
+                    console.log("Overlay: Musik sukses berputar otomatis setelah countdown!");
                 }).catch(err => {
-                    // Jika gagal/ditahan sistem pas refresh, panggil lagi fungsi ini 1 detik kemudian
-                    console.log("Overlay: Musik tertahan sistem, mencoba ulang dalam 1 detik...");
-                    setTimeout(paksaPutarLagu, 1000);
+                    console.log("Overlay: Mencoba pemicu ulang musik...");
+                    setTimeout(jalankanMusikOtomatis, 400);
                 });
             }
 
-            // Eksekusi langsung pas load halaman
-            paksaPutarLagu();
+            // --- SEKUENS ANIMASI COUNTDOWN (MURNI SINKRONISASI JS-CSS) ---
+            
+            // [Detik 0]: Angka 1 Muncul Berkedip
+            countText.innerText = "1";
+            countText.classList.add('pop-boom');
 
-            // Proteksi Lapisan Kedua: Jika loop HTML5 gagal, JS akan memaksa loop secara manual
+            // [Detik 1]: Angka 2 Muncul Gantikan Angka 1
+            setTimeout(() => {
+                countText.classList.remove('pop-boom');
+                void countText.offsetWidth; // Trik paksa reset animasi CSS browser
+                countText.innerText = "2";
+                countText.classList.add('pop-boom');
+            }, 1000);
+
+            // [Detik 2]: Angka 3 Muncul Gantikan Angka 2
+            setTimeout(() => {
+                countText.classList.remove('pop-boom');
+                void countText.offsetWidth; 
+                countText.innerText = "3";
+                countText.classList.add('pop-boom');
+            }, 2000);
+
+            // [Detik 3]: BOOM! THE DROP - Countdown hilang, Musik Nyala, Animasi Jedag-Jedug Pecah!
+            setTimeout(() => {
+                countBox.style.display = 'none'; // Buang elemen countdown biar ga ganggu layar
+                document.body.classList.add('activated'); // Nyalakan seluruh animasi jedag-jedug
+                jalankanMusikOtomatis(); // Mainkan musiknya langsung
+            }, 3000);
+
+            // Proteksi Back-up Loop Manual (Anti Gagal)
             audio.addEventListener('ended', () => {
                 audio.currentTime = 0;
-                audio.play().catch(err => console.log("Gagal memicu loop manual:", err));
+                audio.play().catch(err => console.log("Loop gagal dipicu:", err));
             });
         });
     </script>
