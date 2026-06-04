@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Gold Jedag Jedug iPhone Style</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@900&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Setup Kanvas 9:16 */
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background-color: transparent; 
+            overflow: hidden;
+            font-family: 'Montserrat', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* MASTER WRAPPER - Efek Guncang Layar Jedag-Jedug */
+        .gold-shake-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            /* Tempo Bass Drop */
+            animation: goldBassShake 0.45s infinite cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        /* AMBIENT LIGHTS - Efek Kilat Background Emas */
+        .ambient-gold-flash {
+            position: absolute;
+            width: 550px;
+            height: 550px;
+            background: radial-gradient(circle, rgba(255, 215, 0, 0.2) 0%, transparent 70%);
+            mix-blend-mode: screen;
+            pointer-events: none;
+            animation: goldFlash 0.45s infinite ease-out;
+        }
+
+        /* KONTEN TENGAH - Efek Mentul (Pulse) */
+        .hype-center {
+            text-align: center;
+            z-index: 10;
+            animation: goldBassPulse 0.45s infinite cubic-bezier(0.175, 0.885, 0.32, 1.25);
+        }
+
+        /* IPHONE EMOJI WRAPPER - Dipaksa Render Apple Style + Glowing */
+        .iphone-emoji {
+            width: 28vw; /* Ukuran presisi */
+            height: auto;
+            margin-bottom: 25px;
+            display: inline-block;
+            /* Menggunakan filter drop-shadow khusus gambar png agar ikutan glow */
+            animation: iphoneEmojiGlow 0.45s infinite ease-out;
+        }
+
+        /* TYPOGRAPHY - Rapih, Simetris, & Solid Gold Glow */
+        .modern-text {
+            font-size: 9.5vw;
+            color: #ffffff;
+            text-transform: uppercase;
+            margin: 0;
+            padding: 0 20px;
+            letter-spacing: 3px;
+            line-height: 1.2;
+            animation: goldTextGlow 0.45s infinite ease-out;
+        }
+
+        /* Highlight Emas Mengilat */
+        .gold-highlight {
+            color: #ffd700;
+        }
+
+        /* ==================== NADA MUSIK EMAS TERBANG ==================== */
+        .gold-note {
+            position: absolute;
+            bottom: -10%;
+            font-size: 8vw;
+            color: #ffd700;
+            z-index: 5;
+            opacity: 0;
+            filter: drop-shadow(0 0 12px #ffd700);
+            animation: noteFlyUp linear infinite;
+        }
+
+        /* ==================== CORE JEDAG-JEDUG GOLD ANIMATION ==================== */
+        
+        /* 1. Efek Guncang Screen (Patah-Patah Snappy) */
+        @keyframes goldBassShake {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            10% { transform: translate(-5px, 6px) rotate(-0.5deg); } 
+            20% { transform: translate(4px, -4px) rotate(0.5deg); }
+            30% { transform: translate(-2px, 2px) rotate(0deg); }
+            40%, 100% { transform: translate(0, 0) rotate(0deg); }
+        }
+
+        /* 2. Efek Mentul Elemen */
+        @keyframes goldBassPulse {
+            0% { transform: scale(1); }
+            12% { transform: scale(1.14); } /* Hentakan bass membesar */
+            100% { transform: scale(1); }
+        }
+
+        /* 3. Efek Kilat Cahaya Emas di Background */
+        @keyframes goldFlash {
+            0% { opacity: 0.2; transform: scale(0.8); }
+            12% { opacity: 1; transform: scale(1.25); }
+            100% { opacity: 0.2; transform: scale(0.8); }
+        }
+
+        /* 4. Teks Glowing Emas Berlapis (Super Mewah) */
+        @keyframes goldTextGlow {
+            0% { text-shadow: 0 0 10px rgba(255, 215, 0, 0.3); }
+            12% { text-shadow: 0 0 20px #ffd700, 0 0 40px #ffaa00, 0 0 70px #ff6a00; }
+            100% { text-shadow: 0 0 10px rgba(255, 215, 0, 0.3); }
+        }
+
+        /* 5. EMOJI GLOWING (Drop Shadow Khusus Gambar) */
+        @keyframes iphoneEmojiGlow {
+            0% { filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.2)); }
+            12% { filter: drop-shadow(0 0 30px #ffd700) drop-shadow(0 0 15px #ffaa00); }
+            100% { filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.2)); }
+        }
+
+        /* 6. Animasi Nada Musik Terbang */
+        @keyframes noteFlyUp {
+            0% { transform: translateY(0) scale(0.6) rotate(0deg); opacity: 0; }
+            15% { opacity: 0.9; }
+            85% { opacity: 0.9; }
+            100% { transform: translateY(-125vh) scale(1.1) rotate(360deg); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="gold-shake-container">
+        
+        <div class="ambient-gold-flash"></div>
+        
+        <div class="gold-note" style="left: 8%; animation-duration: 3.8s; animation-delay: 0s;">🎵</div>
+        <div class="gold-note" style="left: 23%; animation-duration: 3s; animation-delay: 0.8s;">🎶</div>
+        <div class="gold-note" style="left: 38%; animation-duration: 4.5s; animation-delay: 0.3s;">🎵</div>
+        <div class="gold-note" style="left: 68%; animation-duration: 3.2s; animation-delay: 1.2s;">🎶</div>
+        <div class="gold-note" style="left: 88%; animation-duration: 4s; animation-delay: 0.5s;">🎵</div>
+        <div class="gold-note" style="left: 52%; animation-duration: 3.5s; animation-delay: 1.8s;">🎶</div>
+
+        <div class="hype-center">
+            <img class="iphone-emoji" src="https://emojicdn.elk.sh/😎?style=apple" alt="Cool iPhone Emoji">
+            
+            <h1 class="modern-text">KASIH MUSIK</h1>
+            <h1 class="modern-text gold-highlight">DULU GUYSS!</h1>
+        </div>
+
+    </div>
+
+</body>
+</html>
