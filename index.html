@@ -2,6 +2,7 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gold Jedag Jedug iPhone Style</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@900&display=swap" rel="stylesheet">
@@ -13,12 +14,33 @@
             padding: 0;
             width: 100%;
             height: 100%;
-            background-color: transparent; 
+            background-color: #000; 
             overflow: hidden;
             font-family: 'Montserrat', sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
+            user-select: none;
+        }
+
+        /* Overlay Awal untuk Interaksi (Bypass Autoplay Browser) */
+        .play-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: #ffd700;
+            cursor: pointer;
+            transition: opacity 0.5s ease;
+        }
+        .play-overlay h2 {
+            font-size: 6vw;
+            letter-spacing: 2px;
+            animation: pulseText 1s infinite alternate;
         }
 
         /* MASTER WRAPPER - Efek Guncang Layar Jedag-Jedug */
@@ -30,7 +52,12 @@
             align-items: center;
             justify-content: center;
             position: relative;
-            /* Tempo Bass Drop */
+            visibility: hidden; /* Sembunyi sebelum diklik */
+        }
+
+        /* Aktif setelah musik jalan */
+        .activated .gold-shake-container {
+            visibility: visible;
             animation: goldBassShake 0.45s infinite cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
 
@@ -42,6 +69,8 @@
             background: radial-gradient(circle, rgba(255, 215, 0, 0.2) 0%, transparent 70%);
             mix-blend-mode: screen;
             pointer-events: none;
+        }
+        .activated .ambient-gold-flash {
             animation: goldFlash 0.45s infinite ease-out;
         }
 
@@ -49,20 +78,23 @@
         .hype-center {
             text-align: center;
             z-index: 10;
+        }
+        .activated .hype-center {
             animation: goldBassPulse 0.45s infinite cubic-bezier(0.175, 0.885, 0.32, 1.25);
         }
 
-        /* IPHONE EMOJI WRAPPER - Dipaksa Render Apple Style + Glowing */
+        /* IPHONE EMOJI WRAPPER */
         .iphone-emoji {
-            width: 28vw; /* Ukuran presisi */
+            width: 28vw;
             height: auto;
             margin-bottom: 25px;
             display: inline-block;
-            /* Menggunakan filter drop-shadow khusus gambar png agar ikutan glow */
+        }
+        .activated .iphone-emoji {
             animation: iphoneEmojiGlow 0.45s infinite ease-out;
         }
 
-        /* TYPOGRAPHY - Rapih, Simetris, & Solid Gold Glow */
+        /* TYPOGRAPHY */
         .modern-text {
             font-size: 9.5vw;
             color: #ffffff;
@@ -71,15 +103,16 @@
             padding: 0 20px;
             letter-spacing: 3px;
             line-height: 1.2;
+        }
+        .activated .modern-text {
             animation: goldTextGlow 0.45s infinite ease-out;
         }
 
-        /* Highlight Emas Mengilat */
         .gold-highlight {
             color: #ffd700;
         }
 
-        /* ==================== NADA MUSIK EMAS TERBANG ==================== */
+        /* NADA MUSIK EMAS TERBANG */
         .gold-note {
             position: absolute;
             bottom: -10%;
@@ -88,12 +121,16 @@
             z-index: 5;
             opacity: 0;
             filter: drop-shadow(0 0 12px #ffd700);
+        }
+        .activated .gold-note {
             animation: noteFlyUp linear infinite;
         }
 
-        /* ==================== CORE JEDAG-JEDUG GOLD ANIMATION ==================== */
-        
-        /* 1. Efek Guncang Screen (Patah-Patah Snappy) */
+        /* ANIMATIONS KEYFRAMES */
+        @keyframes pulseText {
+            0% { transform: scale(1); opacity: 0.6; }
+            100% { transform: scale(1.05); opacity: 1; }
+        }
         @keyframes goldBassShake {
             0% { transform: translate(0, 0) rotate(0deg); }
             10% { transform: translate(-5px, 6px) rotate(-0.5deg); } 
@@ -101,36 +138,26 @@
             30% { transform: translate(-2px, 2px) rotate(0deg); }
             40%, 100% { transform: translate(0, 0) rotate(0deg); }
         }
-
-        /* 2. Efek Mentul Elemen */
         @keyframes goldBassPulse {
             0% { transform: scale(1); }
-            12% { transform: scale(1.14); } /* Hentakan bass membesar */
+            12% { transform: scale(1.14); }
             100% { transform: scale(1); }
         }
-
-        /* 3. Efek Kilat Cahaya Emas di Background */
         @keyframes goldFlash {
             0% { opacity: 0.2; transform: scale(0.8); }
             12% { opacity: 1; transform: scale(1.25); }
             100% { opacity: 0.2; transform: scale(0.8); }
         }
-
-        /* 4. Teks Glowing Emas Berlapis (Super Mewah) */
         @keyframes goldTextGlow {
             0% { text-shadow: 0 0 10px rgba(255, 215, 0, 0.3); }
             12% { text-shadow: 0 0 20px #ffd700, 0 0 40px #ffaa00, 0 0 70px #ff6a00; }
             100% { text-shadow: 0 0 10px rgba(255, 215, 0, 0.3); }
         }
-
-        /* 5. EMOJI GLOWING (Drop Shadow Khusus Gambar) */
         @keyframes iphoneEmojiGlow {
             0% { filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.2)); }
             12% { filter: drop-shadow(0 0 30px #ffd700) drop-shadow(0 0 15px #ffaa00); }
             100% { filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.2)); }
         }
-
-        /* 6. Animasi Nada Musik Terbang */
         @keyframes noteFlyUp {
             0% { transform: translateY(0) scale(0.6) rotate(0deg); opacity: 0; }
             15% { opacity: 0.9; }
@@ -141,8 +168,13 @@
 </head>
 <body>
 
+    <div class="play-overlay" id="playOverlay">
+        <h2>TAP TO PLAY 🔥</h2>
+    </div>
+
+    <audio id="bgMusic" src="music.mp3" loop preload="auto"></audio>
+
     <div class="gold-shake-container">
-        
         <div class="ambient-gold-flash"></div>
         
         <div class="gold-note" style="left: 8%; animation-duration: 3.8s; animation-delay: 0s;">🎵</div>
@@ -154,12 +186,26 @@
 
         <div class="hype-center">
             <img class="iphone-emoji" src="https://emojicdn.elk.sh/😎?style=apple" alt="Cool iPhone Emoji">
-            
             <h1 class="modern-text">KASIH MUSIK</h1>
             <h1 class="modern-text gold-highlight">DULU GUYSS!</h1>
         </div>
-
     </div>
 
+    <script>
+        const overlay = document.getElementById('playOverlay');
+        const audio = document.getElementById('bgMusic');
+
+        overlay.addEventListener('click', () => {
+            // Putar Audio
+            audio.play().catch(error => console.log("Autoplay dicegah:", error));
+            
+            // Tambahkan class aktif ke body untuk memulai animasi
+            document.body.classList.add('activated');
+            
+            // Hilangkan overlay petunjuk ketuk
+            overlay.style.opacity = '0';
+            setTimeout(() => overlay.remove(), 500);
+        });
+    </script>
 </body>
 </html>
