@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gold Jedag Jedug iPhone Style - Pure Overlay</title>
+    <title>Gold Jedag Jedug - Ultimate Stream Overlay</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@900&display=swap" rel="stylesheet">
     
@@ -23,7 +23,7 @@
             user-select: none;
         }
 
-        /* MASTER WRAPPER */
+        /* MASTER WRAPPER - Langsung Animasi Guncang Tanpa Syarat Klik/JS */
         .gold-shake-container {
             width: 100%;
             height: 100%;
@@ -32,14 +32,10 @@
             align-items: center;
             justify-content: center;
             position: relative;
-        }
-
-        /* Efek Guncang Langsung Aktif Pas Load */
-        .activated .gold-shake-container {
             animation: goldBassShake 0.45s infinite cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
 
-        /* AMBIENT LIGHTS */
+        /* AMBIENT LIGHTS - Otomatis Kelap-Kelip */
         .ambient-gold-flash {
             position: absolute;
             width: 550px;
@@ -47,18 +43,13 @@
             background: radial-gradient(circle, rgba(255, 215, 0, 0.2) 0%, transparent 70%);
             mix-blend-mode: screen;
             pointer-events: none;
-            opacity: 0;
-        }
-        .activated .ambient-gold-flash {
             animation: goldFlash 0.45s infinite ease-out;
         }
 
-        /* KONTEN TENGAH */
+        /* KONTEN TENGAH - Efek Mentul / Pulse */
         .hype-center {
             text-align: center;
             z-index: 10;
-        }
-        .activated .hype-center {
             animation: goldBassPulse 0.45s infinite cubic-bezier(0.175, 0.885, 0.32, 1.25);
         }
 
@@ -68,12 +59,10 @@
             height: auto;
             margin-bottom: 25px;
             display: inline-block;
-        }
-        .activated .iphone-emoji {
             animation: iphoneEmojiGlow 0.45s infinite ease-out;
         }
 
-        /* TYPOGRAPHY */
+        /* TYPOGRAPHY WITH GLOW EFFECT */
         .modern-text {
             font-size: 9.5vw;
             color: #ffffff;
@@ -83,8 +72,6 @@
             letter-spacing: 3px;
             line-height: 1.2;
             text-shadow: 0 0 10px rgba(0, 0, 0, 0.9), 0 0 20px rgba(0, 0, 0, 0.9); 
-        }
-        .activated .modern-text {
             animation: goldTextGlow 0.45s infinite ease-out;
         }
 
@@ -102,12 +89,10 @@
             z-index: 5;
             opacity: 0;
             filter: drop-shadow(0 0 12px #ffd700);
-        }
-        .activated .gold-note {
             animation: noteFlyUp linear infinite;
         }
 
-        /* ANIMATIONS KEYFRAMES */
+        /* KEYFRAMES ANIMASI JEDAG JEDUG */
         @keyframes goldBassShake {
             0% { transform: translate(0, 0) rotate(0deg); }
             10% { transform: translate(-5px, 6px) rotate(-0.5deg); } 
@@ -165,16 +150,28 @@
     </div>
 
     <script>
-        // Jalankan sistem secara paksa begitu halaman selesai dimuat
-        window.addEventListener('load', () => {
+        window.addEventListener('DOMContentLoaded', () => {
             const audio = document.getElementById('bgMusic');
-            
-            // Langsung aktifkan animasi jedag-jedug
-            document.body.classList.add('activated');
-            
-            // Paksa audio putar (Sangat manjur di OBS / TikTok Live Studio)
-            audio.play().catch(err => {
-                console.log("Autoplay diblokir di browser biasa, tapi aman di OBS Browser Source:", err);
+            audio.loop = true; // Paksa loop aktif di sistem
+
+            // Fungsi penembak otomatis + sistem deteksi gagal (Auto-Retry)
+            function paksaPutarLagu() {
+                audio.play().then(() => {
+                    console.log("Overlay: Musik berhasil berputar otomatis.");
+                }).catch(err => {
+                    // Jika gagal/ditahan sistem pas refresh, panggil lagi fungsi ini 1 detik kemudian
+                    console.log("Overlay: Musik tertahan sistem, mencoba ulang dalam 1 detik...");
+                    setTimeout(paksaPutarLagu, 1000);
+                });
+            }
+
+            // Eksekusi langsung pas load halaman
+            paksaPutarLagu();
+
+            // Proteksi Lapisan Kedua: Jika loop HTML5 gagal, JS akan memaksa loop secara manual
+            audio.addEventListener('ended', () => {
+                audio.currentTime = 0;
+                audio.play().catch(err => console.log("Gagal memicu loop manual:", err));
             });
         });
     </script>
