@@ -8,7 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@900&display=swap" rel="stylesheet">
     
     <style>
-        /* Setup Kanvas 9:16 - SEKARANG TRANSPARAN */
+        /* Setup Kanvas 9:16 - TRANSPARAN */
         body, html {
             margin: 0;
             padding: 0;
@@ -23,7 +23,7 @@
             user-select: none;
         }
 
-        /* MASTER WRAPPER - Efek Guncang Layar Jedag-Jedug */
+        /* MASTER WRAPPER */
         .gold-shake-container {
             width: 100%;
             height: 100%;
@@ -32,16 +32,14 @@
             align-items: center;
             justify-content: center;
             position: relative;
-            visibility: hidden; /* Sembunyi sebelum diklik/ditekan */
         }
 
-        /* Aktif setelah musik jalan */
+        /* Efek Guncang Aktif setelah layar diketuk */
         .activated .gold-shake-container {
-            visibility: visible;
             animation: goldBassShake 0.45s infinite cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
 
-        /* AMBIENT LIGHTS - Efek Kilat Background Emas */
+        /* AMBIENT LIGHTS */
         .ambient-gold-flash {
             position: absolute;
             width: 550px;
@@ -49,12 +47,13 @@
             background: radial-gradient(circle, rgba(255, 215, 0, 0.2) 0%, transparent 70%);
             mix-blend-mode: screen;
             pointer-events: none;
+            opacity: 0;
         }
         .activated .ambient-gold-flash {
             animation: goldFlash 0.45s infinite ease-out;
         }
 
-        /* KONTEN TENGAH - Efek Mentul (Pulse) */
+        /* KONTEN TENGAH */
         .hype-center {
             text-align: center;
             z-index: 10;
@@ -83,7 +82,7 @@
             padding: 0 20px;
             letter-spacing: 3px;
             line-height: 1.2;
-            text-shadow: 0 0 8px rgba(0, 0, 0, 0.6); /* Agar teks tetap kelihatan di OBS */
+            text-shadow: 0 0 10px rgba(0, 0, 0, 0.9), 0 0 20px rgba(0, 0, 0, 0.9); 
         }
         .activated .modern-text {
             animation: goldTextGlow 0.45s infinite ease-out;
@@ -91,6 +90,7 @@
 
         .gold-highlight {
             color: #ffd700;
+            text-shadow: 0 0 10px rgba(0, 0, 0, 0.9);
         }
 
         /* NADA MUSIK EMAS TERBANG */
@@ -145,6 +145,10 @@
 </head>
 <body>
 
+    <div id="debugStatus" style="position: absolute; top: 15px; left: 15px; color: #ffcc00; font-size: 13px; z-index: 9999; font-family: sans-serif; background: rgba(0,0,0,0.7); padding: 5px 10px; border-radius: 4px;">
+        Status: Siap. Silakan KETUK/KLIK layar untuk tes musik.
+    </div>
+
     <audio id="bgMusic" src="music.mp3" loop preload="auto"></audio>
 
     <div class="gold-shake-container">
@@ -166,15 +170,32 @@
 
     <script>
         const audio = document.getElementById('bgMusic');
+        const debug = document.getElementById('debugStatus');
 
-        // CARA PANGGIL ASLI: Cukup klik di mana saja pada layar kosong
+        // DETEKSI 1: Jika file music.mp3 di GitHub namanya salah / tidak ada (Error 404)
+        audio.addEventListener('error', () => {
+            debug.innerHTML = "❌ ERROR: File 'music.mp3' gagal dimuat! Periksa nama file di GitHub (wajib huruf kecil semua).";
+            debug.style.color = "#ff4d4d";
+        });
+
+        // Pemicu Musik saat Layar Diklik
         document.addEventListener('click', () => {
-            // Putar Audio music.mp3 langsung
-            audio.play().catch(error => console.log("Autoplay dicegah browser:", error));
+            debug.innerHTML = "⏳ Sedang mencoba memutar musik...";
             
-            // Tambahkan class aktif untuk memunculkan elemen dan mulai jedag-jedug
-            document.body.classList.add('activated');
-        }, { once: true }); // { once: true } memastikan klik selanjutnya tidak mereset lagu
+            audio.play().then(() => {
+                // DETEKSI 2: Jika Sukses Jalan
+                debug.innerHTML = "✅ SUKSES: Musik berputar!";
+                debug.style.color = "#4dff4d";
+                document.body.classList.add('activated');
+                
+                // Hilangkan teks debug setelah 3 detik agar overlay OBS bersih
+                setTimeout(() => { debug.style.display = 'none'; }, 3000);
+            }).catch(error => {
+                // DETEKSI 3: Jika diblokir sistem browser
+                debug.innerHTML = "❌ GAGAL: Browser memblokir audio. Error: " + error.message;
+                debug.style.color = "#ff4d4d";
+            });
+        }, { once: true });
     </script>
 </body>
 </html>
