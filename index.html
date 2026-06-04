@@ -8,7 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@900&display=swap" rel="stylesheet">
     
     <style>
-        /* Setup Kanvas 9:16 - Transparan Penuh */
+        /* Setup Kanvas 9:16 - SEKARANG TRANSPARAN */
         body, html {
             margin: 0;
             padding: 0;
@@ -23,7 +23,7 @@
             user-select: none;
         }
 
-        /* MASTER WRAPPER - Efek Awal Animasi Masuk (Intro) */
+        /* MASTER WRAPPER - Efek Guncang Layar Jedag-Jedug */
         .gold-shake-container {
             width: 100%;
             height: 100%;
@@ -32,12 +32,12 @@
             align-items: center;
             justify-content: center;
             position: relative;
-            /* Animasi Masuk saat Pertama Load */
-            animation: introIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            visibility: hidden; /* Sembunyi sebelum diklik/ditekan */
         }
 
-        /* BERUBAH JADI JEDAG JEDUG (Aktif setelah jeda suara klik) */
+        /* Aktif setelah musik jalan */
         .activated .gold-shake-container {
+            visibility: visible;
             animation: goldBassShake 0.45s infinite cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
 
@@ -49,13 +49,12 @@
             background: radial-gradient(circle, rgba(255, 215, 0, 0.2) 0%, transparent 70%);
             mix-blend-mode: screen;
             pointer-events: none;
-            opacity: 0;
         }
         .activated .ambient-gold-flash {
             animation: goldFlash 0.45s infinite ease-out;
         }
 
-        /* KONTEN TENGAH */
+        /* KONTEN TENGAH - Efek Mentul (Pulse) */
         .hype-center {
             text-align: center;
             z-index: 10;
@@ -84,7 +83,7 @@
             padding: 0 20px;
             letter-spacing: 3px;
             line-height: 1.2;
-            text-shadow: 0 0 10px rgba(0, 0, 0, 0.5); /* Supaya teks tetap terbaca di background terang */
+            text-shadow: 0 0 8px rgba(0, 0, 0, 0.6); /* Agar teks tetap kelihatan di OBS */
         }
         .activated .modern-text {
             animation: goldTextGlow 0.45s infinite ease-out;
@@ -108,15 +107,7 @@
             animation: noteFlyUp linear infinite;
         }
 
-        /* ==================== KEYFRAMES ANIMASI ==================== */
-        
-        /* Animasi Pop-In Masuk */
-        @keyframes introIn {
-            0% { opacity: 0; transform: scale(0.4); }
-            100% { opacity: 1; transform: scale(1); }
-        }
-
-        /* 1. Efek Guncang Screen Snappy */
+        /* ANIMATIONS KEYFRAMES */
         @keyframes goldBassShake {
             0% { transform: translate(0, 0) rotate(0deg); }
             10% { transform: translate(-5px, 6px) rotate(-0.5deg); } 
@@ -124,36 +115,26 @@
             30% { transform: translate(-2px, 2px) rotate(0deg); }
             40%, 100% { transform: translate(0, 0) rotate(0deg); }
         }
-
-        /* 2. Efek Mentul Elemen */
         @keyframes goldBassPulse {
             0% { transform: scale(1); }
             12% { transform: scale(1.14); }
             100% { transform: scale(1); }
         }
-
-        /* 3. Efek Kilat Cahaya Emas */
         @keyframes goldFlash {
             0% { opacity: 0.2; transform: scale(0.8); }
             12% { opacity: 1; transform: scale(1.25); }
             100% { opacity: 0.2; transform: scale(0.8); }
         }
-
-        /* 4. Teks Glowing Emas */
         @keyframes goldTextGlow {
             0% { text-shadow: 0 0 10px rgba(255, 215, 0, 0.3); }
             12% { text-shadow: 0 0 20px #ffd700, 0 0 40px #ffaa00, 0 0 70px #ff6a00; }
             100% { text-shadow: 0 0 10px rgba(255, 215, 0, 0.3); }
         }
-
-        /* 5. Emoji Glowing */
         @keyframes iphoneEmojiGlow {
             0% { filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.2)); }
             12% { filter: drop-shadow(0 0 30px #ffd700) drop-shadow(0 0 15px #ffaa00); }
             100% { filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.2)); }
         }
-
-        /* 6. Animasi Nota Terbang */
         @keyframes noteFlyUp {
             0% { transform: translateY(0) scale(0.6) rotate(0deg); opacity: 0; }
             15% { opacity: 0.9; }
@@ -164,8 +145,6 @@
 </head>
 <body>
 
-    <!-- Audio Efek Klik & Musik Utama -->
-    <audio id="clickSound" src="click.mp3" preload="auto"></audio>
     <audio id="bgMusic" src="music.mp3" loop preload="auto"></audio>
 
     <div class="gold-shake-container">
@@ -186,22 +165,16 @@
     </div>
 
     <script>
-        window.addEventListener('DOMContentLoaded', () => {
-            const clickSound = document.getElementById('clickSound');
-            const bgMusic = document.getElementById('bgMusic');
+        const audio = document.getElementById('bgMusic');
+
+        // CARA PANGGIL ASLI: Cukup klik di mana saja pada layar kosong
+        document.addEventListener('click', () => {
+            // Putar Audio music.mp3 langsung
+            audio.play().catch(error => console.log("Autoplay dicegah browser:", error));
             
-            // 1. Putar efek suara klik langsung saat load
-            clickSound.play().catch(err => console.log("Autoplay aktif di OBS/Widget, terblokir di browser biasa:", err));
-            
-            // 2. Beri jeda 600ms (menunggu suara klik selesai & animasi masuk pop-in kelar)
-            setTimeout(() => {
-                // Aktifkan musik utama
-                bgMusic.play().catch(err => console.log(err));
-                
-                // Tambahkan class aktif untuk memulai putaran jedag-jedug
-                document.body.classList.add('activated');
-            }, 600); 
-        });
+            // Tambahkan class aktif untuk memunculkan elemen dan mulai jedag-jedug
+            document.body.classList.add('activated');
+        }, { once: true }); // { once: true } memastikan klik selanjutnya tidak mereset lagu
     </script>
 </body>
 </html>
